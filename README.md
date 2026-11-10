@@ -25,10 +25,24 @@ Eine **statische Webseite**: nur fertige Dateien, ohne Datenbank, ohne PHP und o
 | `css/style.css` | Gestaltung (Farben oben in `:root`) |
 | `js/data.js` | **Inhalte:** Produkte, Preise, Kurse, Versandkosten. Hier ändert man im Alltag etwas. |
 | `js/app.js` | Logik: Warenkorb, Dialoge, Formulare |
+| `img/produkte/` | Produktbilder: freigestellt, zentriert, hellorange Hintergrund, 800×800 px |
+| `werkzeuge/produktbilder.py` | Skript, das die Produktbilder erzeugt (siehe unten) |
 | `robots.txt` | Sperrt die Testversion für Suchmaschinen |
 | `.nojekyll` | Sagt GitHub Pages, dass die Dateien unverändert ausgeliefert werden sollen |
 
-Die Bilder werden im Entwurf direkt von `balzner-bbq.li` geladen. Für die fertige Seite kommen sie in einen Ordner `img/`, und in `js/data.js` wird `BILD` angepasst.
+Die **Produktbilder** liegen lokal im Projekt. Team-, Galerie- und Titelbilder werden im Entwurf noch direkt von `balzner-bbq.li` geladen und kommen für die fertige Seite ebenfalls nach `img/`.
+
+### Neue Produktbilder erzeugen
+
+Das Skript stellt die Dosen und Boxen frei und setzt sie einheitlich mittig auf den orangen Hintergrund. Es läuft komplett lokal (Python mit OpenCV, NumPy).
+
+```
+python3 werkzeuge/produktbilder.py <ordner-mit-originalen> img/produkte
+```
+
+- Die Originale heissen wie die Produkt-ID in `js/data.js`, z. B. `wild.jpg`.
+- Neue Dosen oben im Skript bei `BILDER` mit `"dose"` eintragen. Für Boxen oder schwierige Fotos gibt man ein Rechteck oder ein Vieleck an.
+- Am besten fotografiert man die Dosen vor hellem, einfarbigem Hintergrund.
 
 **Geplant für die fertige Version:**
 - Bezahlung über **Payrexx** (Schweizer Anbieter, TWINT) oder Stripe
