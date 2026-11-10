@@ -41,6 +41,7 @@ Eine **statische Webseite**: nur fertige Dateien, ohne Datenbank, ohne PHP und o
 | `js/gutschein-pdf.js` | Zeichnet den Gutschein (Flammen, Glut, Foto, Text) und baut daraus ein PDF, komplett lokal ohne Bibliothek. Gültigkeit (3 Jahre) oben in der Datei einstellbar. |
 | `img/gutschein/` | Grillfotos für den Gutschein |
 | `img/produkte/` | Produktbilder: freigestellt, zentriert, hellorange Hintergrund, 800×800 px |
+| `werkzeuge/neue-version.sh` | **Vor jedem Push ausführen:** setzt eine neue Versionsnummer (`?v=…`) an alle CSS/JS-Links, damit Browser keine alten Dateien aus dem Cache verwenden |
 | `werkzeuge/produktbilder.py` | Skript, das die Produktbilder erzeugt (siehe unten) |
 | `robots.txt` | Sperrt die Testversion für Suchmaschinen |
 | `.nojekyll` | Sagt GitHub Pages, dass die Dateien unverändert ausgeliefert werden sollen |

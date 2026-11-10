@@ -56,6 +56,7 @@ $("#zuruecksetzen").addEventListener("click", () => {
 // ---------- Navigation ----------
 const ANSICHTEN = { uebersicht, kurse, produkte, bestellungen, gutscheine, hinweis, anfragen };
 function zeigen(name) {
+  if (!ANSICHTEN[name]) name = "uebersicht"; // unbekannte Ansicht (z. B. alte Datei im Cache): nicht abstürzen
   if (aktuelleAnsicht === "hinweis" && name !== "hinweis" && merker.hinweisEntwurf && merker.hinweisGeaendert &&
       !confirm("Die Änderungen am Hinweis sind noch nicht gespeichert. Trotzdem wechseln?")) return;
   if (name !== "hinweis") merker.hinweisEntwurf = null;
