@@ -10,7 +10,7 @@
   sowie ein Jahr erfundener Bestellungen, Buchungen und Gutscheine für die Statistik.
 */
 const Store = (() => {
-  const SCHLUESSEL = "bbq-demo-db-v1";
+  const SCHLUESSEL = "bbq-demo-db-v2"; // v2: Zahlarten LiPay/Rechnung
   let db = null;
 
   // Zufallszahlen mit festem Startwert: Beispieldaten sehen bei jedem Zurücksetzen gleich aus
@@ -67,7 +67,7 @@ const Store = (() => {
         const personen = Math.min(ziel - belegt, r() < 0.45 ? 2 : 1);
         const b = new Date(kursDatum); b.setDate(b.getDate() - 5 - Math.floor(r() * 50));
         if (b > heute) b.setTime(heute.getTime() - Math.floor(r() * 40) * 864e5);
-        liste.push({ ...person(), personen, bemerkung: r() < 0.15 ? wahl(["Laktoseintoleranz", "Kein Schweinefleisch", "Vegetarisch", "Nussallergie"]) : "", gebucht: tagISO(b), zahlart: wahl(["twint", "twint", "karte", "paypal"]), betrag: personen * preis });
+        liste.push({ ...person(), personen, bemerkung: r() < 0.15 ? wahl(["Laktoseintoleranz", "Kein Schweinefleisch", "Vegetarisch", "Nussallergie"]) : "", gebucht: tagISO(b), zahlart: wahl(["lipay", "lipay", "lipay", "rechnung"]), betrag: personen * preis });
         belegt += personen;
       }
       return liste;
@@ -100,7 +100,7 @@ const Store = (() => {
         const alterTage = (heute - d) / 864e5;
         const status = alterTage < 3 ? "neu" : alterTage < 6 && r() < 0.5 ? "neu" : lieferung === "abholung" ? "abgeholt" : "versendet";
         const p0 = person();
-        bestellungen.push({ id: "B-" + nr++, datum: tagISO(d), ...p0, adresse: lieferung === "versand" ? "Musterstrasse " + (1 + Math.floor(r() * 40)) + ", " + wahl(ORTE) : "", lieferung, zahlart: wahl(["twint", "twint", "twint", "karte", "rechnung"]), positionen, waren, versand, total: waren + versand, status });
+        bestellungen.push({ id: "B-" + nr++, datum: tagISO(d), ...p0, adresse: lieferung === "versand" ? "Musterstrasse " + (1 + Math.floor(r() * 40)) + ", " + wahl(ORTE) : "", lieferung, zahlart: wahl(["lipay", "lipay", "rechnung"]), positionen, waren, versand, total: waren + versand, status });
       }
     }
     bestellungen.sort((a, b) => b.datum.localeCompare(a.datum));

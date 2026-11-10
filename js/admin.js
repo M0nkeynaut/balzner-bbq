@@ -21,7 +21,7 @@ const datum = (iso) => iso ? new Date(iso + "T12:00").toLocaleDateString("de-CH"
 const datumLang = (iso) => new Date(iso + "T12:00").toLocaleDateString("de-CH", { weekday: "short", day: "numeric", month: "long", year: "numeric" });
 const heute = () => Store.tagISO(new Date());
 const MONATE = ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"];
-const ZAHLART = { twint: "TWINT", karte: "Karte", rechnung: "Rechnung", paypal: "PayPal", bar: "Bar" };
+const ZAHLART = { lipay: "LiPay", rechnung: "Rechnung", bar: "Bar" };
 
 let db = Store.laden();
 let aktuelleAnsicht = "uebersicht";
@@ -347,7 +347,7 @@ function teilnehmerListe(k) {
       <form class="formular" id="tnForm" style="margin-top:12px">
         <div class="reihe"><label>Name<input name="name" required></label><label>Telefon<input name="telefon"></label></div>
         <div class="reihe"><label>E-Mail<input type="email" name="email"></label><label>Personen<input type="number" name="personen" min="1" value="1" required></label></div>
-        <div class="reihe"><label>Bemerkung<input name="bemerkung"></label><label>Bezahlt mit<select name="zahlart"><option value="bar">Bar</option><option value="twint">TWINT</option><option value="rechnung">Rechnung</option></select></label></div>
+        <div class="reihe"><label>Bemerkung<input name="bemerkung"></label><label>Bezahlt mit<select name="zahlart"><option value="bar">Bar</option><option value="lipay">LiPay</option><option value="rechnung">Rechnung</option></select></label></div>
         <button class="knopf haupt" type="submit">Eintragen</button>
       </form></details>
     <div class="dialog-fuss"><button class="knopf" id="drucken">🖨 Liste drucken</button><button class="knopf" data-dialog-zu>Schliessen</button></div>`);

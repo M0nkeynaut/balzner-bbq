@@ -4,7 +4,7 @@
   1. Kurse und Produkte aus dem Datenspeicher (js/store.js) anzeigen
   2. Warenkorb (wird im Browser gemerkt)
   3. Dialoge: Box-Auswahl, Kasse, Kursbuchung, Gutschein
-  4. Formulare (im Entwurf nur Demo, später an Payrexx/Formspree o. ä. anbinden)
+  4. Formulare (im Entwurf nur Demo, später an LiPay und das Backend anbinden)
 */
 
 // ---------- Kleine Hilfsfunktionen ----------
@@ -199,12 +199,11 @@ function boxAuswahl(box) {
 }
 
 // Zahlungsarten-Auswahl (wiederverwendbar)
-const zahlartenHtml = (mitRechnung = true) => `
+const zahlartenHtml = () => `
   <label style="margin-bottom:-6px">Bezahlen mit</label>
   <div class="zahlarten">
-    <label class="zahlart"><input type="radio" name="zahlart" value="twint" checked>TWINT</label>
-    <label class="zahlart"><input type="radio" name="zahlart" value="karte">Karte</label>
-    ${mitRechnung ? '<label class="zahlart"><input type="radio" name="zahlart" value="rechnung">Rechnung</label>' : '<label class="zahlart"><input type="radio" name="zahlart" value="paypal">PayPal</label>'}
+    <label class="zahlart"><input type="radio" name="zahlart" value="lipay" checked>LiPay</label>
+    <label class="zahlart"><input type="radio" name="zahlart" value="rechnung">Rechnung</label>
   </div>`;
 
 // Kasse

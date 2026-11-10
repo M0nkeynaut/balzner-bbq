@@ -248,7 +248,7 @@ a.weg:hover { color: var(--glut); }
 }
 .auswahl:has(input:checked) { border-color: var(--glut); }
 .auswahl input { accent-color: var(--glut); width: 18px; height: 18px; }
-.zahlarten { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 6px 0 4px; }
+.zahlarten { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin: 6px 0 4px; }
 .zahlart { position: relative; text-align: center; padding: 12px 6px; border-radius: 10px; background: #fff; border: 2px solid var(--creme-2); cursor: pointer; font-weight: 700; font-size: .9rem; }
 .zahlart:has(input:checked) { border-color: var(--glut); }
 .zahlart input { position: absolute; opacity: 0; pointer-events: none; }

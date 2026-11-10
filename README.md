@@ -5,7 +5,7 @@
 Ein Entwurf für die neue Webseite von **Balzner BBQ** (Grillcatering, Grillkurse, Gewürze, Fleisch und Wild aus Balzers).
 Er ersetzt die alte WordPress-Seite und bringt:
 
-- **Shop mit Warenkorb:** Gewürzbox klein mit Auswahl von 2 Gewürzen, Versand oder Abholung, TWINT, Karte, Rechnung
+- **Shop mit Warenkorb:** Gewürzbox klein mit Auswahl von 2 Gewürzen, Versand oder Abholung, Bezahlung mit LiPay oder auf Rechnung
 - **Grillkurse mit Terminen:** freie Plätze, Buchung, Warteliste bei ausgebuchten Kursen
 - **Gutscheine** zum Verschenken
 - **Catering-Anfrage** mit den wichtigsten Eckdaten (Datum, Personen, Anlass)
@@ -64,7 +64,8 @@ python3 werkzeuge/produktbilder.py <ordner-mit-originalen> img/produkte
 **Geplant für die fertige Version:**
 - **Backend mit PocketBase** (ein Programm, eingebaute Datenbank, Login): ersetzt `js/store.js`, damit alle Daten zentral gespeichert sind und die Verwaltung von jedem Gerät aus funktioniert
 - Persönliches Login für die Verwaltung (statt «Demo öffnen»)
-- Bezahlung über **Payrexx** (Schweizer Anbieter, TWINT) oder Stripe. Nach der Zahlung meldet Payrexx das automatisch ans Backend.
+- Bezahlung mit **LiPay** oder auf **Rechnung** (QR-Rechnung). Zahlungseingang wird in der Verwaltung als bezahlt markiert.
+- Webhoster und E-Mail: **hosttech** (Schweiz)
 - E-Mail-Bestätigungen an Kunden und Benachrichtigung an Balzner BBQ bei neuen Bestellungen/Anfragen
 - `noindex` in `index.html`/`admin.html` und `robots.txt` entfernen
 
