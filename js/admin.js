@@ -519,23 +519,46 @@ function gutscheine() {
       <tbody id="gsListe">${db.gutscheine.map((g, i) => `<tr data-such="${esc((g.code + " " + g.fuer).toLowerCase())}">
         <td><b style="font-family:monospace;font-size:1rem">${esc(g.code)}</b></td><td>${datum(g.datum)}</td><td>${esc(g.fuer)}</td><td class="r">${chf(g.betrag)}</td>
         <td>${g.eingeloest ? '<span class="status status-grau">Eingelöst</span>' : '<span class="status status-ok">Gültig</span>'}</td>
-        <td class="aktionen"><button class="knopf ${g.eingeloest ? "" : "haupt"}" data-einloesen="${i}">${g.eingeloest ? "Rückgängig" : "Einlösen"}</button></td></tr>`).join("")}</tbody>
+        <td class="aktionen"><button class="knopf" data-pdf="${i}" title="Gutschein als PDF herunterladen">📄 PDF</button><button class="knopf ${g.eingeloest ? "" : "haupt"}" data-einloesen="${i}">${g.eingeloest ? "Rückgängig" : "Einlösen"}</button></td></tr>`).join("")}</tbody>
     </table></div>`;
 
   $("#gsSuche").addEventListener("input", (e) => { const q = e.target.value.toLowerCase(); $$("#gsListe tr").forEach((tr) => (tr.hidden = !tr.dataset.such.includes(q))); });
   $$("[data-einloesen]").forEach((b) => b.addEventListener("click", () => { const g = db.gutscheine[b.dataset.einloesen]; g.eingeloest = !g.eingeloest; speichern(); gutscheine(); meldung(g.eingeloest ? `${g.code} eingelöst` : `${g.code} wieder gültig`); }));
+  $$("[data-pdf]").forEach((b) => b.addEventListener("click", async () => {
+    const g = db.gutscheine[b.dataset.pdf];
+    b.disabled = true; await GutscheinPDF.herunterladen(g); b.disabled = false; meldung(`PDF für ${g.code} heruntergeladen`);
+  }));
   $("#neuerGs").addEventListener("click", () => {
-    dialogZeigen(`<h3>Gutschein erstellen</h3><p>Zum Beispiel für einen Verkauf vor Ort oder als Sponsoring.</p>
+    dialogZeigen(`<h3>Gutschein erstellen</h3><p>Zum Beispiel für einen Verkauf vor Ort oder als Sponsoring. Das PDF wird sofort heruntergeladen.</p>
       <form class="formular" id="gsForm">
-        <div class="reihe"><label>Betrag (CHF)<input type="number" name="betrag" min="1" value="100" required></label><label>Für<input name="fuer" required></label></div>
-        <div class="dialog-fuss"><button type="button" class="knopf" data-dialog-zu>Abbrechen</button><button class="knopf haupt" type="submit">Erstellen</button></div></form>`);
-    $("#gsForm").addEventListener("submit", (e) => {
+        <div class="reihe"><label>Betrag (CHF)<input type="number" name="betrag" min="1" value="100" required></label><label>Für (Name auf dem Gutschein)<input name="fuer" required></label></div>
+        <label>Von (optional)<input name="von" placeholder="z. B. Familie Frick"></label>
+        <label>Persönliche Nachricht (optional)<input name="nachricht" maxlength="90" placeholder="z. B. Alles Gute zum Geburtstag!"></label>
+        <div class="dialog-fuss"><button type="button" class="knopf" data-dialog-zu>Abbrechen</button><button class="knopf haupt" type="submit">Erstellen & PDF herunterladen</button></div></form>`);
+    $("#gsForm").addEventListener("submit", async (e) => {
       e.preventDefault();
-      const code = "BBQ-" + Math.floor(1000 + Math.random() * 8999);
-      db.gutscheine.unshift({ code, betrag: Number(e.target.betrag.value), fuer: e.target.fuer.value, von: "Verwaltung", datum: heute(), eingeloest: false });
-      speichern(); dialog.close(); gutscheine(); meldung(`Gutschein ${code} erstellt`);
+      const f = e.target, code = neuerCode();
+      const g = { code, betrag: Number(f.betrag.value), fuer: f.fuer.value.trim(), von: f.von.value.trim(), nachricht: f.nachricht.value.trim(), datum: heute(), eingeloest: false };
+      db.gutscheine.unshift(g); speichern(); gutscheine();
+      f.querySelector("[type=submit]").disabled = true;
+      const bild = await GutscheinPDF.herunterladen(g);
+      gutscheinFertig(g, bild);
     });
   });
+}
+
+// Code, den es noch nicht gibt
+function neuerCode() {
+  let c;
+  do { c = "BBQ-" + Math.floor(1000 + Math.random() * 9000); } while (db.gutscheine.some((g) => g.code === c));
+  return c;
+}
+function gutscheinFertig(g, bild) {
+  dialogZeigen(`<h3>Gutschein ${esc(g.code)} erstellt</h3>
+    <p>Das PDF wurde heruntergeladen (A5 quer, zum Ausdrucken oder per E-Mail Verschicken).</p>
+    <img src="${bild}" alt="Vorschau Gutschein" style="width:100%;border-radius:10px;display:block">
+    <div class="dialog-fuss"><button class="knopf" id="gsNochmal">📄 Nochmals herunterladen</button><button class="knopf haupt" data-dialog-zu>Fertig</button></div>`);
+  $("#gsNochmal").addEventListener("click", () => GutscheinPDF.herunterladen(g));
 }
 
 // =====================================================================

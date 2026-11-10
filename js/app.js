@@ -332,18 +332,34 @@ function gutscheinZeigen() {
         </select>
       </label>
       <label>Für (Name auf dem Gutschein)<input name="fuer" required></label>
-      <label>Persönliche Nachricht<textarea name="nachricht" rows="2"></textarea></label>
+      <label>Von (optional)<input name="von" placeholder="Ihr Name"></label>
+      <label>Persönliche Nachricht<input name="nachricht" maxlength="90" placeholder="z. B. Alles Gute zum Geburtstag!"></label>
       <label>Ihre E-Mail<input type="email" name="email" required></label>
       ${zahlartenHtml(false)}
       <button class="btn btn-glut btn-voll" type="submit">Gutschein kaufen</button>
     </form>`);
-  $("#gsForm").addEventListener("submit", (e) => {
+  $("#gsForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const f = e.target;
-    db.gutscheine.unshift({ code: "BBQ-" + Math.floor(1000 + Math.random() * 8999), betrag: Number(f.betrag.value), fuer: f.fuer.value,
-      von: f.email.value, datum: heuteISO(), eingeloest: false });
+    let code;
+    do { code = "BBQ-" + Math.floor(1000 + Math.random() * 9000); } while (db.gutscheine.some((g) => g.code === code));
+    const g = { code, betrag: Number(f.betrag.value), fuer: f.fuer.value.trim(), von: f.von.value.trim(), nachricht: f.nachricht.value.trim(),
+      email: f.email.value, datum: heuteISO(), eingeloest: false };
+    db.gutscheine.unshift(g);
     Store.speichern();
-    erfolgZeigen("Gutschein unterwegs!", "Das PDF wird an Ihre E-Mail-Adresse gesendet.");
+    f.querySelector("[type=submit]").disabled = true;
+    const bild = await GutscheinPDF.herunterladen(g);
+    dialogZeigen(`
+      <div class="erfolg">
+        <div class="icon">🎁</div>
+        <h3 style="margin-right:0">Ihr Gutschein ist bereit!</h3>
+        <p>Das PDF wurde heruntergeladen und kommt zusätzlich per E-Mail.</p>
+        <img src="${bild}" alt="Vorschau Gutschein" style="width:100%;border-radius:10px;margin:6px 0 16px">
+        <p><small><strong>Entwurf:</strong> In der fertigen Seite wird zuerst bezahlt, erst dann gibt es das PDF.</small></p>
+        <button class="btn btn-hell" style="color:var(--text)" id="gsNochmal">Nochmals herunterladen</button>
+        <button class="btn btn-dunkel" data-dialog-zu>Schliessen</button>
+      </div>`);
+    $("#gsNochmal").addEventListener("click", () => GutscheinPDF.herunterladen(g));
   });
 }
 

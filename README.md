@@ -16,7 +16,7 @@ Er ersetzt die alte WordPress-Seite und bringt:
   - **Kurse:** anlegen, ändern, verstecken, löschen; Teilnehmerliste ansehen, drucken, von Hand ergänzen
   - **Produkte:** anlegen (mit Bild), ändern, im Shop ein-/ausblenden, als ausverkauft markieren, löschen
   - **Bestellungen:** filtern, suchen, als versendet/abgeholt markieren
-  - **Gutscheine:** einlösen, erstellen
+  - **Gutscheine:** einlösen, erstellen; beim Erstellen wird sofort ein **PDF** (A5 quer) mit Betrag, Name, Nachricht und Code heruntergeladen. Jeder Gutschein lässt sich jederzeit erneut als PDF holen. Auch beim Kauf auf der Webseite gibt es das PDF gleich.
   - **Anfragen:** Catering und Kontakt, als erledigt markieren
 
 > **Entwurf:** Es wird nichts bezahlt und nichts gesendet. Bestellungen, Buchungen, Gutscheine und Anfragen
@@ -36,6 +36,8 @@ Eine **statische Webseite**: nur fertige Dateien, ohne Datenbank, ohne PHP und o
 | `js/store.js` | **Datenspeicher** für Webseite und Verwaltung, erzeugt auch die Beispieldaten. Wird später durch das Backend ersetzt. |
 | `js/app.js` | Logik der Webseite: Warenkorb, Dialoge, Formulare |
 | `admin.html`, `js/admin.js`, `css/admin.css` | Verwaltung (Demo-Anmeldung ohne Passwort) |
+| `js/gutschein-pdf.js` | Zeichnet den Gutschein (Flammen, Glut, Foto, Text) und baut daraus ein PDF, komplett lokal ohne Bibliothek. Gültigkeit (3 Jahre) oben in der Datei einstellbar. |
+| `img/gutschein/` | Grillfotos für den Gutschein |
 | `img/produkte/` | Produktbilder: freigestellt, zentriert, hellorange Hintergrund, 800×800 px |
 | `werkzeuge/produktbilder.py` | Skript, das die Produktbilder erzeugt (siehe unten) |
 | `robots.txt` | Sperrt die Testversion für Suchmaschinen |
