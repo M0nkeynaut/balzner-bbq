@@ -37,6 +37,7 @@ Eine **statische Webseite**: nur fertige Dateien, ohne Datenbank, ohne PHP und o
 | `js/store.js` | **Datenspeicher** für Webseite und Verwaltung, erzeugt auch die Beispieldaten. Wird später durch das Backend ersetzt. |
 | `js/app.js` | Logik der Webseite: Warenkorb, Dialoge, Formulare |
 | `admin.html`, `js/admin.js`, `css/admin.css` | Verwaltung (Demo-Anmeldung ohne Passwort) |
+| `impressum.html`, `datenschutz.html`, `agb.html` | Rechtstexte (Liechtenstein: ECG, DSGVO/DSG, Konsumentenschutz). **Gelb markierte Platzhalter** (Adresse, Telefon, E-Mail, Handelsregister, Hoster …) vor dem Livegang ausfüllen und die Texte von einer Fachperson prüfen lassen. |
 | `js/hinweis.js` | Baut das Hinweis-Popup (für Webseite und Vorschau in der Verwaltung gleich) |
 | `js/gutschein-pdf.js` | Zeichnet den Gutschein (Flammen, Glut, Foto, Text) und baut daraus ein PDF, komplett lokal ohne Bibliothek. Gültigkeit (3 Jahre) oben in der Datei einstellbar. |
 | `img/gutschein/` | Grillfotos für den Gutschein |

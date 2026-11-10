@@ -238,6 +238,8 @@ function kasseZeigen() {
         <div class="summe-zeile"><span>Versand</span><span id="kasseVersand"></span></div>
         <div class="summe-zeile total"><span>Total</span><span id="kasseTotal"></span></div>
       </div>
+      <p class="rechtshinweis">Versand innert 5–10 Arbeitstagen. Mit der Bestellung akzeptieren Sie unsere <a href="agb.html" target="_blank">AGB</a>
+        (inkl. <a href="agb.html#ruecktritt" target="_blank">Rücktrittsrecht</a>) und die <a href="datenschutz.html" target="_blank">Datenschutzerklärung</a>.</p>
       <button class="btn btn-glut btn-voll" type="submit">Zahlungspflichtig bestellen</button>
     </form>`);
 
@@ -290,6 +292,8 @@ function kursBuchen(kurs) {
       <label>E-Mail<input type="email" name="email" required autocomplete="email"></label>
       <label>Allergien / Bemerkungen<input name="bemerkung"></label>
       ${zahlartenHtml(false)}
+      <p class="rechtshinweis">Kostenlose Absage bis 14 Tage vorher, Ersatzperson jederzeit möglich (<a href="agb.html#kurse" target="_blank">Absagebedingungen</a>).
+        Allergie-Angaben verwenden wir nur für den Kurs (<a href="datenschutz.html#kurse" target="_blank">Datenschutz</a>).</p>
       <button class="btn btn-glut btn-voll" type="submit">Buchen · <span id="kursTotal">${chf(kurs.preis)}</span></button>
     </form>`);
   const form = $("#kursForm");
@@ -336,6 +340,7 @@ function gutscheinZeigen() {
       <label>Persönliche Nachricht<input name="nachricht" maxlength="90" placeholder="z. B. Alles Gute zum Geburtstag!"></label>
       <label>Ihre E-Mail<input type="email" name="email" required></label>
       ${zahlartenHtml(false)}
+      <p class="rechtshinweis">3 Jahre gültig, für Kurse, Catering und Shop (<a href="agb.html#gutscheine" target="_blank">Bedingungen</a>).</p>
       <button class="btn btn-glut btn-voll" type="submit">Gutschein kaufen</button>
     </form>`);
   $("#gsForm").addEventListener("submit", async (e) => {
@@ -363,15 +368,9 @@ function gutscheinZeigen() {
   });
 }
 
-const INFOS = {
-  impressum: "<h3>Impressum</h3><p>Platzhalter: Firmenname, Adresse, Kontakt, Handelsregister-/UID-Nummer vom Kunden.</p>",
-  datenschutz: "<h3>Datenschutz</h3><p>Platzhalter: Datenschutzerklärung nach DSG/DSGVO. Die Seite lädt keine Google-Schriften und keine Tracker.</p>",
-  agb: "<h3>AGB & Versand</h3><p>Platzhalter: Versandkosten, Lieferzeit, Rückgabe, Stornobedingungen für Kurse.</p>",
-};
-
 // ---------- 4. Klicks auf der ganzen Seite an einer Stelle behandeln ----------
 document.addEventListener("click", (e) => {
-  const z = e.target.closest("[data-kaufen],[data-buchen],[data-warteliste],[data-gutschein],[data-kasse],[data-plus],[data-minus],[data-schliessen],[data-dialog-zu],[data-info]");
+  const z = e.target.closest("[data-kaufen],[data-buchen],[data-warteliste],[data-gutschein],[data-kasse],[data-plus],[data-minus],[data-schliessen],[data-dialog-zu]");
   if (!z) return;
   const d = z.dataset;
 
@@ -390,7 +389,6 @@ document.addEventListener("click", (e) => {
   }
   else if ("schliessen" in d) warenkorbOeffnen(false);
   else if ("dialogZu" in d) dialog.close();
-  else if (d.info) { e.preventDefault(); dialogZeigen(INFOS[d.info]); }
 });
 
 $("#warenkorbOeffnen").addEventListener("click", () => warenkorbOeffnen(true));

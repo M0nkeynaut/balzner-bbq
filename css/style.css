@@ -307,3 +307,34 @@ a.weg:hover { color: var(--glut); }
   background: #fde6d8; color: var(--glut); font-size: .8rem;
 }
 .hinweis-popup .btn { margin-top: 6px; }
+
+/* ---------- Rechtsseiten (Impressum, Datenschutz, AGB) ---------- */
+.recht-kopf { background: var(--kohle); color: var(--creme); }
+.recht-kopf .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 70px; }
+.recht-kopf a.zurueck { text-decoration: none; font-size: .95rem; opacity: .85; }
+.recht-kopf a.zurueck:hover { opacity: 1; color: var(--glut-hell); }
+.recht { padding: clamp(40px, 7vw, 80px) 0 80px; }
+.recht .wrap { max-width: 820px; }
+.recht h1 { font-size: clamp(2rem, 5vw, 3rem); margin-bottom: .2em; }
+.recht .stand { color: var(--text-hell); margin: 0 0 32px; }
+.recht h2 { font-size: 1.45rem; max-width: none; margin: 2.2em 0 .5em; padding-top: .6em; border-top: 1px solid var(--creme-2); }
+.recht h3 { font-size: 1.1rem; margin: 1.6em 0 .4em; }
+.recht p, .recht li { color: var(--text); }
+.recht ul, .recht ol { padding-left: 22px; }
+.recht li { margin-bottom: 6px; }
+.recht a { color: var(--glut); }
+.recht .kasten { background: var(--weiss); border: 1px solid var(--creme-2); border-radius: var(--radius); padding: 20px 24px; margin: 16px 0; }
+.recht .kasten p:first-child { margin-top: 0; }
+.recht .kasten p:last-child { margin-bottom: 0; }
+.recht .inhalt-nav { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 8px; }
+.recht .inhalt-nav a { text-decoration: none; font-size: .88rem; font-weight: 600; background: var(--weiss); border: 1px solid var(--creme-2); border-radius: 99px; padding: 6px 14px; color: var(--text); }
+.recht .inhalt-nav a:hover { border-color: var(--glut); color: var(--glut); }
+.recht table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: .95rem; }
+.recht th, .recht td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--creme-2); vertical-align: top; }
+.recht th { font-size: .8rem; text-transform: uppercase; letter-spacing: .06em; color: var(--text-hell); }
+.platzhalter { background: #fff1a8; color: #5b4500; padding: 1px 6px; border-radius: 4px; font-weight: 600; }
+.entwurf-hinweis { background: #fff7d1; border: 1px solid #f2c94c; border-radius: var(--radius); padding: 14px 18px; font-size: .92rem; margin-bottom: 28px; }
+@media print { .recht-kopf, .fuss, .demo-banner, .inhalt-nav { display: none; } .recht { padding: 0; } }
+.rechtshinweis { font-size: .82rem; color: var(--text-hell); margin: 2px 0 0; line-height: 1.45; }
+.rechtshinweis a { color: var(--text); }
+.sub a { color: var(--glut); }
