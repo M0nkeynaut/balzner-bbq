@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Testversion: Suchmaschinen sollen diese Seite NICHT aufnehmen. Für die fertige Seite entfernen. -->
+  <meta name="robots" content="noindex, nofollow">
+  <title>Balzner BBQ – Grillcatering, Kurse & Gewürze aus Balzers</title>
+  <meta name="description" content="Grillcatering, Grillkurse, Gewürze, Fleisch und Wild aus Balzers, Liechtenstein.">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="demo-banner">Entwurf / Testversion: Bestellungen und Buchungen werden nicht ausgeführt.</div>
+
+<header class="kopf" id="kopf">
+  <div class="wrap kopf-inner">
+    <a href="#top" class="logo">Balzner<span>BBQ</span></a>
+    <nav class="nav" id="nav">
+      <a href="#leistungen">Leistungen</a>
+      <a href="#kurse">Grillkurse</a>
+      <a href="#shop">Shop</a>
+      <a href="#catering">Catering</a>
+      <a href="#team">Über uns</a>
+      <a href="#kontakt">Kontakt</a>
+    </nav>
+    <button class="warenkorb-btn" id="warenkorbOeffnen" aria-label="Warenkorb öffnen">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M7 18a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM5.2 4l.6 3H21l-2 8H7.4L4.4 2H1v2h2.6z"/></svg>
+      <span class="badge" id="warenkorbAnzahl">0</span>
+    </button>
+    <button class="menu-btn" id="menuBtn" aria-label="Menü">☰</button>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bild" style="background-image:url('https://balzner-bbq.li/wp-content/uploads/2023/06/cropped-cropped-cropped-cropped-DSCF2362-scaled-1.jpg')"></div>
+    <div class="wrap hero-inhalt">
+      <p class="eyebrow">Balzers · Liechtenstein</p>
+      <h1>Feuer, Fleisch<br>und Geschmack.</h1>
+      <p class="lead">Grillcatering, Grillkurse und hausgemachte Gewürze vom ersten Dipl. Fleischsommelier Liechtensteins.</p>
+      <div class="hero-buttons">
+        <a href="#kurse" class="btn btn-glut">Grillkurs buchen</a>
+        <a href="#catering" class="btn btn-hell">Catering anfragen</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- LEISTUNGEN -->
+  <section class="sektion" id="leistungen">
+    <div class="wrap">
+      <p class="eyebrow">Was wir für Sie tun</p>
+      <h2>Ihr Partner rund um Grill, BBQ, Fleisch und Wild</h2>
+      <div class="leistungen">
+        <article class="leistung">
+          <span class="nr">01</span>
+          <h3>Catering</h3>
+          <p class="claim">Wir grillieren, Sie geniessen.</p>
+          <p>Spezialitäten vom Grill für Ihre Party oder Ihren Firmenanlass, damit Sie sich ganz auf Ihre Gäste konzentrieren können.</p>
+          <a href="#catering" class="link">Anfrage stellen →</a>
+        </article>
+        <article class="leistung">
+          <span class="nr">02</span>
+          <h3>Grillkurse</h3>
+          <p class="claim">Wir vermitteln, Sie lernen.</p>
+          <p>Unterhaltsame und lehrreiche Kurse für Anfänger und Fortgeschrittene, mit viel Genuss.</p>
+          <a href="#kurse" class="link">Termine ansehen →</a>
+        </article>
+        <article class="leistung">
+          <span class="nr">03</span>
+          <h3>Gewürze</h3>
+          <p class="claim">Wir machen, Sie probieren.</p>
+          <p>Unsere eigenen Gewürzmischungen aus sorgfältig ausgewählten Zutaten, mit einer Prise Leidenschaft.</p>
+          <a href="#shop" class="link">Zum Shop →</a>
+        </article>
+        <article class="leistung">
+          <span class="nr">04</span>
+          <h3>Beratung</h3>
+          <p class="claim">Sie fragen, wir antworten.</p>
+          <p>Kompetente Tipps zu Technik, Grill und Fleisch, egal ob Anfänger oder Grillmeister.</p>
+          <a href="#kontakt" class="link">Frage stellen →</a>
+        </article>
+        <article class="leistung">
+          <span class="nr">05</span>
+          <h3>Fleischhandel</h3>
+          <p class="claim">Ausgewählte Qualität.</p>
+          <p>Langjährige Erfahrung als Metzger: nur sorgfältig ausgewählte Fleischsorten in höchster Qualität.</p>
+          <a href="#kontakt" class="link">Anfragen →</a>
+        </article>
+        <article class="leistung">
+          <span class="nr">06</span>
+          <h3>Wildverarbeitung</h3>
+          <p class="claim">Von der Natur auf den Tisch.</p>
+          <p>Professionelle Verarbeitung von Wildbret, damit die natürlichen Aromen zur Geltung kommen.</p>
+          <a href="#kontakt" class="link">Anfragen →</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- GRILLKURSE -->
+  <section class="sektion dunkel" id="kurse">
+    <div class="wrap">
+      <p class="eyebrow">Grillkurse</p>
+      <h2>Kommende Termine</h2>
+      <p class="hinweis-klein">Beispieltermine für den Entwurf.</p>
+      <div class="kurse" id="kursListe"><!-- wird von js/app.js gefüllt --></div>
+      <div class="gutschein">
+        <div>
+          <h3>Grillkurs verschenken</h3>
+          <p>Gutscheine für Kurse oder einen Wunschbetrag: als PDF sofort per E-Mail.</p>
+        </div>
+        <button class="btn btn-glut" data-gutschein>Gutschein kaufen</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- SHOP -->
+  <section class="sektion" id="shop">
+    <div class="wrap">
+      <p class="eyebrow">Shop</p>
+      <h2>Unsere Gewürze: zum Verschenken oder selbst Verwenden</h2>
+      <p class="sub">Bezahlen mit TWINT, Karte oder auf Rechnung. Versand in Liechtenstein und der Schweiz oder Abholung in Balzers.</p>
+      <div class="produkte" id="produktListe"><!-- wird von js/app.js gefüllt --></div>
+    </div>
+  </section>
+
+  <!-- CATERING -->
+  <section class="sektion akzent" id="catering">
+    <div class="wrap catering">
+      <div>
+        <p class="eyebrow">Catering</p>
+        <h2>Ihr Anlass, unser Grill</h2>
+        <p>Geburtstag, Hochzeit, Vereinsfest oder Firmenanlass: Sagen Sie uns die wichtigsten Eckdaten, und Sie erhalten eine unverbindliche Offerte.</p>
+        <ul class="haken">
+          <li>Grill, Personal und Equipment inklusive</li>
+          <li>Menü nach Ihren Wünschen</li>
+          <li>Fleisch aus ausgewählter Herkunft</li>
+        </ul>
+      </div>
+      <form class="formular" id="cateringForm">
+        <div class="reihe">
+          <label>Datum des Anlasses<input type="date" name="datum" required></label>
+          <label>Anzahl Personen<input type="number" name="personen" min="10" placeholder="z. B. 40" required></label>
+        </div>
+        <label>Art des Anlasses
+          <select name="art">
+            <option>Privatfest</option><option>Firmenanlass</option><option>Hochzeit</option><option>Vereinsfest</option><option>Anderes</option>
+          </select>
+        </label>
+        <label>Ort<input type="text" name="ort" placeholder="Gemeinde oder Adresse"></label>
+        <label>Wünsche zum Menü<textarea name="wuensche" rows="3" placeholder="z. B. Pulled Pork, vegetarische Option …"></textarea></label>
+        <div class="reihe">
+          <label>Name<input type="text" name="name" required></label>
+          <label>Telefon<input type="tel" name="telefon" required></label>
+        </div>
+        <label>E-Mail<input type="email" name="email" required></label>
+        <button class="btn btn-dunkel" type="submit">Offerte anfragen</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- TEAM -->
+  <section class="sektion" id="team">
+    <div class="wrap">
+      <p class="eyebrow">Über uns</p>
+      <h2>Die Menschen hinter dem Feuer</h2>
+      <div class="team">
+        <article class="person">
+          <img src="https://balzner-bbq.li/wp-content/uploads/2021/03/villa-bge-zange-SMALL.jpg" alt="Florian Villamar am Grill" loading="lazy">
+          <div>
+            <h3>Florian Villamar</h3>
+            <ul>
+              <li>1. Dipl. Fleischsommelier in Liechtenstein</li>
+              <li>1. Grilltrainer in Liechtenstein</li>
+              <li>Sektionsvorsitzender Liechtenstein des Internationalen Clubs der Dipl. Fleischsommeliers</li>
+              <li>Ausgebildeter Gastwirt · gelernter Metzger</li>
+            </ul>
+          </div>
+        </article>
+        <article class="person">
+          <img src="https://balzner-bbq.li/wp-content/uploads/2021/03/cropped-IMGP2671hg.jpg" alt="Nadine Villamar" loading="lazy">
+          <div>
+            <h3>Nadine Villamar</h3>
+            <ul>
+              <li>Kursadministration</li>
+              <li>Organisation & Planung</li>
+              <li>Rezeptentwicklung</li>
+            </ul>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALERIE (eigene Bilder statt Instagram-Feed) -->
+  <section class="sektion dunkel" id="galerie">
+    <div class="wrap">
+      <p class="eyebrow">Galerie</p>
+      <h2>Eindrücke vom Grill</h2>
+      <div class="galerie">
+        <img src="https://balzner-bbq.li/wp-content/uploads/2023/06/cropped-DSCF2290-scaled-2.jpg" alt="Catering: Feuerplatte mit Burgern und Pulled Pork" loading="lazy">
+        <img src="https://balzner-bbq.li/wp-content/uploads/2023/06/cropped-DSCF2277-scaled-1.jpg" alt="Patties auf der Feuerplatte" loading="lazy">
+        <img src="https://balzner-bbq.li/wp-content/uploads/2020/07/20382394-5788-47F7-A30A-A5E1FEEA3D3F.jpg" alt="Cheeseburger vom Grill" loading="lazy">
+      </div>
+      <a class="btn btn-hell" href="https://www.instagram.com/balznerbbq/" target="_blank" rel="noopener">Mehr auf Instagram @balznerbbq</a>
+    </div>
+  </section>
+
+  <!-- KONTAKT -->
+  <section class="sektion" id="kontakt">
+    <div class="wrap kontakt">
+      <div>
+        <p class="eyebrow">Kontakt</p>
+        <h2>Melden Sie sich einfach bei uns</h2>
+        <p>Fragen zu Kursen, Fleisch, Wild oder Gewürzen? Wir antworten gerne.</p>
+        <div class="kontakt-wege">
+          <!-- PLATZHALTER: echte Nummer / Adresse vom Kunden einsetzen -->
+          <a href="tel:+423000000000" class="weg">📞 +423 000 00 00 <small>(Platzhalter)</small></a>
+          <a href="https://wa.me/423000000000" class="weg">💬 WhatsApp <small>(Platzhalter)</small></a>
+          <a href="https://www.instagram.com/balznerbbq/" class="weg" target="_blank" rel="noopener">📷 @balznerbbq</a>
+          <span class="weg">📍 Balzers, Liechtenstein</span>
+        </div>
+      </div>
+      <form class="formular" id="kontaktForm">
+        <div class="reihe">
+          <label>Name<input type="text" name="name" required></label>
+          <label>Telefon<input type="tel" name="telefon"></label>
+        </div>
+        <label>E-Mail<input type="email" name="email" required></label>
+        <label>Betreff<input type="text" name="betreff"></label>
+        <label>Ihre Anfrage<textarea name="anfrage" rows="4" required></textarea></label>
+        <button class="btn btn-glut" type="submit">Absenden</button>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer class="fuss">
+  <div class="wrap fuss-inner">
+    <div class="logo">Balzner<span>BBQ</span></div>
+    <nav>
+      <a href="#" data-info="impressum">Impressum</a>
+      <a href="#" data-info="datenschutz">Datenschutz</a>
+      <a href="#" data-info="agb">AGB & Versand</a>
+    </nav>
+    <p>© <span id="jahr"></span> Balzner BBQ · Balzers, Liechtenstein</p>
+  </div>
+</footer>
+
+<!-- WARENKORB (seitliche Leiste) -->
+<div class="overlay" id="overlay"></div>
+<aside class="warenkorb" id="warenkorb" aria-label="Warenkorb">
+  <div class="wk-kopf">
+    <h3>Warenkorb</h3>
+    <button class="schliessen" data-schliessen aria-label="Schliessen">×</button>
+  </div>
+  <div class="wk-inhalt" id="wkInhalt"></div>
+  <div class="wk-fuss" id="wkFuss"></div>
+</aside>
+
+<!-- DIALOG (für Box-Auswahl, Kursbuchung, Kasse, Meldungen) -->
+<dialog class="dialog" id="dialog">
+  <button class="schliessen" data-dialog-zu aria-label="Schliessen">×</button>
+  <div id="dialogInhalt"></div>
+</dialog>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
