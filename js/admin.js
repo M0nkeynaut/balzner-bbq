@@ -54,8 +54,11 @@ $("#zuruecksetzen").addEventListener("click", () => {
 });
 
 // ---------- Navigation ----------
-const ANSICHTEN = { uebersicht, kurse, produkte, bestellungen, gutscheine, anfragen };
+const ANSICHTEN = { uebersicht, kurse, produkte, bestellungen, gutscheine, hinweis, anfragen };
 function zeigen(name) {
+  if (aktuelleAnsicht === "hinweis" && name !== "hinweis" && merker.hinweisEntwurf && merker.hinweisGeaendert &&
+      !confirm("Die Änderungen am Hinweis sind noch nicht gespeichert. Trotzdem wechseln?")) return;
+  if (name !== "hinweis") merker.hinweisEntwurf = null;
   aktuelleAnsicht = name;
   $$(".navpunkt[data-ansicht]").forEach((b) => b.classList.toggle("aktiv", b.dataset.ansicht === name));
   ANSICHTEN[name]();
@@ -69,6 +72,7 @@ function zaehlerAktualisieren() {
   const z1 = $("#zahlBestellungen"), z2 = $("#zahlAnfragen");
   z1.textContent = neu; z1.hidden = !neu;
   z2.textContent = offen; z2.hidden = !offen;
+  $("#zahlHinweis").hidden = !db.hinweis?.aktiv;
 }
 
 // Daten in anderem Tab geändert (z. B. jemand bucht auf der Webseite)
@@ -559,6 +563,107 @@ function gutscheinFertig(g, bild) {
     <img src="${bild}" alt="Vorschau Gutschein" style="width:100%;border-radius:10px;display:block">
     <div class="dialog-fuss"><button class="knopf" id="gsNochmal">📄 Nochmals herunterladen</button><button class="knopf haupt" data-dialog-zu>Fertig</button></div>`);
   $("#gsNochmal").addEventListener("click", () => GutscheinPDF.herunterladen(g));
+}
+
+// =====================================================================
+// HINWEIS-POPUP
+// Man bearbeitet einen Entwurf, sieht rechts live die Vorschau und speichert mit einem Knopf.
+// =====================================================================
+const VORSCHLAEGE = ["Catering", "Grillkurse", "Wildverarbeitung", "Fleischhandel", "Beratung", "Gewürzversand", "Firmenanlässe"];
+
+function hinweis() {
+  if (!merker.hinweisEntwurf) { merker.hinweisEntwurf = structuredClone(db.hinweis); merker.hinweisGeaendert = false; }
+  const h = merker.hinweisEntwurf;
+  const fehlend = VORSCHLAEGE.filter((v) => !h.punkte.some((p) => p.text.trim().toLowerCase() === v.toLowerCase()));
+
+  $("#ansicht").innerHTML = `
+    <div class="kopfzeile"><div><h1>Hinweis-Popup</h1><p>Erscheint beim Öffnen der Webseite, z. B. wenn ein Angebot für ein Jahr ausgebucht ist.</p></div></div>
+    <div class="raster raster-2" style="align-items:start">
+      <div class="karte">
+        <form class="formular hinweis-form" id="hForm" style="box-shadow:none;padding:0">
+          <label class="schalter gross"><input type="checkbox" name="aktiv" ${h.aktiv ? "checked" : ""}>
+            <span><b>Popup auf der Webseite anzeigen</b><br><small id="hStatus">${h.aktiv ? "Ist eingeschaltet" : "Ist ausgeschaltet"}</small></span></label>
+
+          <div class="reihe">
+            <label>Jahr<input type="number" name="jahr" min="2000" max="2100" value="${esc(h.jahr)}"></label>
+            <label>Titel<input name="titel" value="${esc(h.titel)}"></label>
+          </div>
+          <label>Einleitung<textarea name="einleitung" rows="2">${esc(h.einleitung)}</textarea>
+            <small class="feldhilfe">{Jahr} wird automatisch durch das Jahr oben ersetzt.</small></label>
+
+          <div>
+            <span class="feldtitel">Was ist betroffen? <small>Nur angehakte Punkte erscheinen im Popup.</small></span>
+            <div class="punkte" id="hPunkte">${h.punkte.map((p, i) => `
+              <div class="punkt">
+                <input type="checkbox" data-an="${i}" ${p.an ? "checked" : ""} aria-label="Im Popup anzeigen">
+                <input type="text" data-text="${i}" value="${esc(p.text)}" aria-label="Angebot">
+                <button type="button" class="knopf gefahr" data-entfernen="${i}" title="Entfernen">🗑</button>
+              </div>`).join("")}</div>
+            <div class="punkt neu">
+              <input type="text" id="hNeu" placeholder="Weiteres Angebot, z. B. Hochzeiten">
+              <button type="button" class="knopf" id="hDazu">+ Hinzufügen</button>
+            </div>
+            ${fehlend.length ? `<div class="chips" style="margin-top:10px">${fehlend.map((v) => `<button type="button" class="chip" data-vorschlag="${esc(v)}">+ ${esc(v)}</button>`).join("")}</div>` : ""}
+          </div>
+
+          <label>Schlusstext<textarea name="schluss" rows="2">${esc(h.schluss)}</textarea></label>
+
+          <div class="dialog-fuss" style="justify-content:flex-start">
+            <button type="submit" class="btn ${merker.hinweisGeaendert ? "btn-glut" : "btn-dunkel"}" id="hSpeichern">${merker.hinweisGeaendert ? "Speichern" : "Gespeichert ✓"}</button>
+            <button type="button" class="knopf" id="hVorlage">Vorlage wiederherstellen</button>
+            <a class="knopf" href="index.html" target="_blank" rel="noopener" style="text-decoration:none">Webseite ansehen ↗</a>
+          </div>
+        </form>
+      </div>
+      <div class="karte vorschau-karte">
+        <h2>Vorschau</h2>
+        <p class="unter">So sieht das Popup auf der Webseite aus.${h.aktiv ? "" : " <b>Zurzeit ausgeschaltet.</b>"}</p>
+        <div class="vorschau-popup ${h.aktiv ? "" : "aus"}" id="hVorschau">${Hinweis.html(h)}</div>
+      </div>
+    </div>`;
+
+  const form = $("#hForm");
+  const geaendert = () => {
+    merker.hinweisGeaendert = true;
+    const k = $("#hSpeichern"); k.className = "btn btn-glut"; k.textContent = "Speichern";
+    $("#hVorschau").innerHTML = Hinweis.html(h);
+    $("#hVorschau").classList.toggle("aus", !h.aktiv);
+    $("#hStatus").textContent = h.aktiv ? "Wird eingeschaltet (noch speichern)" : "Wird ausgeschaltet (noch speichern)";
+  };
+  // Tippen: Entwurf und Vorschau sofort aktualisieren (ohne neu zu zeichnen, damit der Cursor bleibt)
+  form.addEventListener("input", (e) => {
+    const el = e.target;
+    if (el.name === "jahr") h.jahr = el.value;
+    else if (["titel", "einleitung", "schluss"].includes(el.name)) h[el.name] = el.value;
+    else if (el.dataset.text !== undefined) h.punkte[el.dataset.text].text = el.value;
+    else return;
+    geaendert();
+  });
+  form.addEventListener("change", (e) => {
+    const el = e.target;
+    if (el.name === "aktiv") { h.aktiv = el.checked; geaendert(); }
+    else if (el.dataset.an !== undefined) { h.punkte[el.dataset.an].an = el.checked; geaendert(); }
+  });
+  const neuerPunkt = (text) => {
+    text = text.trim(); if (!text) return;
+    h.punkte.push({ text, an: true }); merker.hinweisGeaendert = true; hinweis();
+  };
+  $("#hDazu").addEventListener("click", () => neuerPunkt($("#hNeu").value));
+  $("#hNeu").addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); neuerPunkt(e.target.value); } });
+  $$("[data-vorschlag]").forEach((b) => b.addEventListener("click", () => neuerPunkt(b.dataset.vorschlag)));
+  $$("[data-entfernen]").forEach((b) => b.addEventListener("click", () => { h.punkte.splice(b.dataset.entfernen, 1); merker.hinweisGeaendert = true; hinweis(); }));
+  $("#hVorlage").addEventListener("click", () => {
+    if (!confirm("Texte und Liste auf die Vorlage zurücksetzen?")) return;
+    merker.hinweisEntwurf = { ...Store.standardHinweis(), aktiv: h.aktiv }; merker.hinweisGeaendert = true; hinweis();
+  });
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    h.jahr = Number(h.jahr) || new Date().getFullYear();
+    h.punkte = h.punkte.filter((p) => p.text.trim());
+    db.hinweis = structuredClone(h); speichern();
+    merker.hinweisGeaendert = false; hinweis();
+    meldung(h.aktiv ? "Gespeichert: Popup ist auf der Webseite aktiv" : "Gespeichert: Popup ist ausgeschaltet");
+  });
 }
 
 // =====================================================================

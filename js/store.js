@@ -124,13 +124,30 @@ const Store = (() => {
       { id: "a4", typ: "kontakt", datum: vor(14), ...person(), betreff: "Firmen-Grillkurs", text: "Wir suchen einen privaten Kurs für 12 Mitarbeitende im Frühling.", erledigt: true },
     ];
 
-    return { version: 1, produkte, kurse, bestellungen, gutscheine, anfragen };
+    return { version: 1, produkte, kurse, bestellungen, gutscheine, anfragen, hinweis: standardHinweis() };
+  }
+
+  // Hinweis-Popup der Webseite (in der Verwaltung unter «Hinweis» einstellbar)
+  function standardHinweis() {
+    return {
+      aktiv: false,
+      jahr: new Date().getFullYear() + 1,
+      titel: "Wichtiger Hinweis",
+      einleitung: "Aufgrund der vielen Anfragen können wir im Jahr {Jahr} leider Folgendes nicht mehr anbieten:",
+      punkte: [
+        { text: "Catering", an: true },
+        { text: "Grillkurse", an: false },
+        { text: "Wildverarbeitung", an: false },
+      ],
+      schluss: "Unsere Gewürze und Gutscheine sind weiterhin erhältlich. Vielen Dank für Ihr Verständnis!",
+    };
   }
 
   function laden() {
     if (db) return db;
     try { db = JSON.parse(localStorage.getItem(SCHLUESSEL)); } catch (e) { db = null; }
     if (!db || !db.version) { db = beispielDaten(); speichern(); }
+    if (!db.hinweis) { db.hinweis = standardHinweis(); speichern(); } // ältere Demo-Daten ergänzen
     return db;
   }
   function speichern() {
@@ -149,5 +166,13 @@ const Store = (() => {
     if (e.key === SCHLUESSEL) { db = null; document.dispatchEvent(new Event("store-geaendert")); }
   });
 
-  return { laden, speichern, zuruecksetzen, belegt, frei, neueId, tagISO };
+  // Hinweistext mit eingesetztem Jahr, nur angehakte Punkte
+  function hinweisText(h) {
+    const jahr = String(h.jahr || "");
+    const ersetzen = (t) => String(t || "").replaceAll("{Jahr}", jahr);
+    return { titel: ersetzen(h.titel), einleitung: ersetzen(h.einleitung), schluss: ersetzen(h.schluss),
+      punkte: h.punkte.filter((p) => p.an && p.text.trim()).map((p) => ersetzen(p.text)) };
+  }
+
+  return { laden, speichern, zuruecksetzen, belegt, frei, neueId, tagISO, standardHinweis, hinweisText };
 })();

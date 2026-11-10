@@ -197,3 +197,25 @@ table.tab { width: 100%; border-collapse: collapse; font-size: .9rem; }
   .hb-zeile { grid-template-columns: 1fr auto; }
   .hb-zeile .hb-spur { grid-column: 1 / -1; grid-row: 2; }
 }
+
+/* ---------- Hinweis-Popup bearbeiten ---------- */
+.schalter.gross { gap: 14px; padding: 14px 16px; background: #fcf9f4; border: 1.5px solid var(--linie); border-radius: 12px; font-size: 1rem; color: var(--text); }
+.schalter.gross input { width: 48px; height: 26px; }
+.schalter.gross input::after { width: 22px; height: 22px; }
+.schalter.gross input:checked::after { transform: translateX(22px); }
+.schalter.gross small { color: var(--text-hell); font-weight: 400; }
+.feldhilfe { font-weight: 400; color: var(--text-hell); font-size: .8rem; }
+.feldtitel { display: block; font-size: .88rem; font-weight: 600; color: var(--text-hell); margin-bottom: 8px; }
+.feldtitel small { font-weight: 400; }
+.punkte { display: grid; gap: 8px; margin-bottom: 8px; }
+.punkt { display: flex; gap: 8px; align-items: center; }
+.punkt input[type=text] { flex: 1; min-width: 0; }
+.punkt input[type=checkbox] { width: 22px; height: 22px; accent-color: var(--glut); flex: none; margin: 0 4px; }
+.punkt.neu input { border-style: dashed; }
+.vorschau-karte { position: sticky; top: 16px; }
+.vorschau-popup { background: var(--creme); border-radius: 18px; padding: 28px 24px; box-shadow: 0 16px 40px rgba(23,19,15,.18); transition: opacity .2s; }
+.vorschau-popup.aus { opacity: .45; filter: grayscale(.6); }
+@media (max-width: 900px) { .vorschau-karte { position: static; } }
+.formular label.schalter { display: flex; align-items: center; font-weight: 400; }
+.hinweis-form { background: none; }
+.hinweis-form a.knopf { display: inline-flex; align-items: center; }

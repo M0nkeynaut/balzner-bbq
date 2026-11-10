@@ -427,8 +427,20 @@ kurseAnzeigen();
 produkteAnzeigen();
 warenkorbAnzeigen();
 
+// Hinweis-Popup: einmal pro Besuch zeigen. Ändert die Verwaltung den Text, erscheint es erneut.
+function hinweisPruefen() {
+  const h = db.hinweis;
+  if (!h || !h.aktiv || dialog.open) return;
+  const key = Hinweis.schluessel(h);
+  try { if (sessionStorage.getItem("bbq-hinweis") === key) return; } catch (e) {}
+  dialogZeigen(Hinweis.html(h));
+  dialog.addEventListener("close", () => { try { sessionStorage.setItem("bbq-hinweis", key); } catch (e) {} }, { once: true });
+}
+setTimeout(hinweisPruefen, 600);
+
 // Wenn die Verwaltung in einem anderen Tab etwas ändert, Seite sofort aktualisieren
 document.addEventListener("store-geaendert", () => {
   db = Store.laden();
   kurseAnzeigen(); produkteAnzeigen(); warenkorbAnzeigen();
+  hinweisPruefen();
 });
