@@ -11,8 +11,17 @@ Er ersetzt die alte WordPress-Seite und bringt:
 - **Catering-Anfrage** mit den wichtigsten Eckdaten (Datum, Personen, Anlass)
 - **Eigene Galerie** statt des kaputten Instagram-Feeds
 - Handy-tauglich, schnell, keine Google-Schriften und keine Tracker
+- **Verwaltung (`admin.html`)** für den Kunden:
+  - **Übersicht:** Umsatz pro Monat (Shop, Kurse, Gutscheine), Bestseller, Kursauslastung, Zahlarten
+  - **Kurse:** anlegen, ändern, verstecken, löschen; Teilnehmerliste ansehen, drucken, von Hand ergänzen
+  - **Produkte:** anlegen (mit Bild), ändern, im Shop ein-/ausblenden, als ausverkauft markieren, löschen
+  - **Bestellungen:** filtern, suchen, als versendet/abgeholt markieren
+  - **Gutscheine:** einlösen, erstellen
+  - **Anfragen:** Catering und Kontakt, als erledigt markieren
 
-> **Entwurf:** Bestellungen, Buchungen und Formulare sind nur Demos. Es wird nichts bezahlt und nichts gesendet.
+> **Entwurf:** Es wird nichts bezahlt und nichts gesendet. Bestellungen, Buchungen, Gutscheine und Anfragen
+> landen im **Browser-Speicher** und erscheinen in der Verwaltung, aber nur im selben Browser auf demselben Gerät.
+> Ein Jahr Beispieldaten (erfundene Namen) wird beim ersten Öffnen erzeugt und lässt sich jederzeit zurücksetzen.
 > Kurstermine, Kurspreise, Versandkosten, Telefonnummer und Impressum sind **Platzhalter**.
 
 ## 2. Wie es funktioniert
@@ -23,8 +32,10 @@ Eine **statische Webseite**: nur fertige Dateien, ohne Datenbank, ohne PHP und o
 |---|---|
 | `index.html` | Aufbau der Seite (alle Abschnitte) |
 | `css/style.css` | Gestaltung (Farben oben in `:root`) |
-| `js/data.js` | **Inhalte:** Produkte, Preise, Kurse, Versandkosten. Hier ändert man im Alltag etwas. |
-| `js/app.js` | Logik: Warenkorb, Dialoge, Formulare |
+| `js/data.js` | **Startinhalte:** Produkte, Preise, Kurse, Versandkosten (werden beim ersten Öffnen in den Speicher übernommen) |
+| `js/store.js` | **Datenspeicher** für Webseite und Verwaltung, erzeugt auch die Beispieldaten. Wird später durch das Backend ersetzt. |
+| `js/app.js` | Logik der Webseite: Warenkorb, Dialoge, Formulare |
+| `admin.html`, `js/admin.js`, `css/admin.css` | Verwaltung (Demo-Anmeldung ohne Passwort) |
 | `img/produkte/` | Produktbilder: freigestellt, zentriert, hellorange Hintergrund, 800×800 px |
 | `werkzeuge/produktbilder.py` | Skript, das die Produktbilder erzeugt (siehe unten) |
 | `robots.txt` | Sperrt die Testversion für Suchmaschinen |
@@ -45,10 +56,11 @@ python3 werkzeuge/produktbilder.py <ordner-mit-originalen> img/produkte
 - Am besten fotografiert man die Dosen vor hellem, einfarbigem Hintergrund.
 
 **Geplant für die fertige Version:**
-- Bezahlung über **Payrexx** (Schweizer Anbieter, TWINT) oder Stripe
-- Formulare über einen Formulardienst (z. B. Formspree) oder eine eigene kleine Mail-Funktion
-- **Pages CMS / Decap CMS**, damit der Kunde Kurse, Produkte und Bilder selbst pflegen kann
-- `noindex` in `index.html` und `robots.txt` entfernen
+- **Backend mit PocketBase** (ein Programm, eingebaute Datenbank, Login): ersetzt `js/store.js`, damit alle Daten zentral gespeichert sind und die Verwaltung von jedem Gerät aus funktioniert
+- Persönliches Login für die Verwaltung (statt «Demo öffnen»)
+- Bezahlung über **Payrexx** (Schweizer Anbieter, TWINT) oder Stripe. Nach der Zahlung meldet Payrexx das automatisch ans Backend.
+- E-Mail-Bestätigungen an Kunden und Benachrichtigung an Balzner BBQ bei neuen Bestellungen/Anfragen
+- `noindex` in `index.html`/`admin.html` und `robots.txt` entfernen
 
 ## 3. Was nötig ist, damit es läuft
 

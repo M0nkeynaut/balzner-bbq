@@ -1,7 +1,7 @@
 /*
   Balzner BBQ – Logik der Seite
   -----------------------------
-  1. Kurse und Produkte aus js/data.js anzeigen
+  1. Kurse und Produkte aus dem Datenspeicher (js/store.js) anzeigen
   2. Warenkorb (wird im Browser gemerkt)
   3. Dialoge: Box-Auswahl, Kasse, Kursbuchung, Gutschein
   4. Formulare (im Entwurf nur Demo, später an Payrexx/Formspree o. ä. anbinden)
@@ -11,11 +11,18 @@
 const $ = (sel) => document.querySelector(sel);
 const chf = (betrag) => EINSTELLUNGEN.waehrung + " " + betrag.toFixed(2);
 const MONATE = ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"];
-const produktVon = (id) => PRODUKTE.find((p) => p.id === id);
+const esc = (t) => String(t ?? "").replace(/[&<>"']/g, (z) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[z]));
+let db = Store.laden();
+const produktVon = (id) => db.produkte.find((p) => p.id === id);
+const kursVon = (id) => db.kurse.find((k) => k.id === id);
+const heuteISO = () => Store.tagISO(new Date());
 
 // ---------- 1. Kurse anzeigen ----------
 function kurseAnzeigen() {
-  $("#kursListe").innerHTML = KURSE.map((k) => {
+  const kommende = db.kurse.filter((k) => k.aktiv && k.datum >= heuteISO()).sort((a, b) => a.datum.localeCompare(b.datum));
+  if (!kommende.length) { $("#kursListe").innerHTML = '<p class="hinweis-klein">Zurzeit sind keine Kurse ausgeschrieben.</p>'; return; }
+  $("#kursListe").innerHTML = kommende.map((k) => {
+    k = { ...k, frei: Store.frei(k) };
     const d = new Date(k.datum);
     let platzText = `${k.frei} von ${k.plaetze} Plätzen frei`, platzKlasse = "";
     if (k.frei === 0) { platzText = "Ausgebucht"; platzKlasse = "voll"; }
@@ -27,9 +34,9 @@ function kurseAnzeigen() {
           <div class="monat">${MONATE[d.getMonth()]} ${d.getFullYear()}</div>
         </div>
         <div>
-          <h3>${k.titel}</h3>
-          <p>${k.text}</p>
-          <div class="kurs-meta"><span>🕑 ${k.zeit}</span><span>📍 ${k.ort}</span></div>
+          <h3>${esc(k.titel)}</h3>
+          <p>${esc(k.text)}</p>
+          <div class="kurs-meta"><span>🕑 ${esc(k.zeit)}</span><span>📍 ${esc(k.ort)}</span></div>
         </div>
         <div class="kurs-aktion">
           <span class="kurs-preis">${chf(k.preis)}</span>
@@ -44,17 +51,19 @@ function kurseAnzeigen() {
 
 // ---------- 1b. Produkte anzeigen ----------
 function produkteAnzeigen() {
-  $("#produktListe").innerHTML = PRODUKTE.map((p) => `
+  $("#produktListe").innerHTML = db.produkte.filter((p) => p.aktiv).map((p) => `
     <article class="produkt">
       ${p.neu ? '<span class="tag-neu">Neu</span>' : ""}
       ${p.typ === "box" ? '<span class="tag-neu tag-box">Geschenk</span>' : ""}
-      <img src="${p.bild}" alt="${p.name}" loading="lazy">
+      <img src="${esc(p.bild)}" alt="${esc(p.name)}" loading="lazy">
       <div class="produkt-text">
-        <h3>${p.name}</h3>
-        <p>${p.text}</p>
+        <h3>${esc(p.name)}</h3>
+        <p>${esc(p.text)}</p>
         <div class="produkt-fuss">
           <span class="preis">${chf(p.preis)}</span>
-          <button class="btn btn-dunkel btn-klein" data-kaufen="${p.id}">In den Warenkorb</button>
+          ${p.ausverkauft
+            ? '<button class="btn btn-dunkel btn-klein" disabled>Ausverkauft</button>'
+            : `<button class="btn btn-dunkel btn-klein" data-kaufen="${p.id}">In den Warenkorb</button>`}
         </div>
       </div>
     </article>`).join("");
@@ -90,6 +99,7 @@ function versandFuer(waren, art) {
 }
 
 function warenkorbAnzeigen() {
+  warenkorb = warenkorb.filter((w) => produktVon(w.id));
   const anzahl = warenkorb.reduce((s, w) => s + w.menge, 0);
   const badge = $("#warenkorbAnzahl");
   badge.textContent = anzahl;
@@ -163,7 +173,7 @@ function erfolgZeigen(titel, text) {
 
 // Gewürzbox klein: zwei Gewürze auswählen
 function boxAuswahl(box) {
-  const gewuerze = PRODUKTE.filter((p) => p.typ === "gewuerz");
+  const gewuerze = db.produkte.filter((p) => p.typ === "gewuerz" && p.aktiv && !p.ausverkauft);
   dialogZeigen(`
     <h3>${box.name}</h3>
     <p>Wählen Sie genau ${box.auswahl} Gewürze für Ihre Box.</p>
@@ -246,21 +256,31 @@ function kasseZeigen() {
   form.addEventListener("submit", (e) => {
     e.preventDefault();
     const name = form.vorname.value;
+    const art = form.lieferung.value, versand = versandFuer(waren, art);
+    const nr = "B-" + (1001 + db.bestellungen.length);
+    db.bestellungen.unshift({
+      id: nr, datum: heuteISO(), name: form.vorname.value + " " + form.nachname.value, email: form.email.value, telefon: "",
+      adresse: art === "versand" ? `${form.strasse.value}, ${form.plz.value} ${form.ort.value}` : "",
+      lieferung: art, zahlart: form.zahlart.value, waren, versand, total: waren + versand, status: "neu",
+      positionen: warenkorb.map((w) => { const p = produktVon(w.id); return { id: p.id, name: p.name, preis: p.preis, menge: w.menge, inhalt: w.inhalt || null }; }),
+    });
+    Store.speichern();
     warenkorb = [];
     speichern();
-    erfolgZeigen(`Danke, ${name}!`, "Ihre Bestellung ist eingegangen. Sie erhalten eine Bestätigung per E-Mail.");
+    erfolgZeigen(`Danke, ${esc(name)}!`, `Ihre Bestellung ${nr} ist eingegangen. Sie erhalten eine Bestätigung per E-Mail.`);
   });
 }
 
 // Kursbuchung
 function kursBuchen(kurs) {
+  const freiePlaetze = Store.frei(kurs);
   dialogZeigen(`
-    <h3>${kurs.titel}</h3>
-    <p>${new Date(kurs.datum).toLocaleDateString("de-CH", { weekday: "long", day: "numeric", month: "long", year: "numeric" })} · ${kurs.zeit} · ${kurs.ort}</p>
+    <h3>${esc(kurs.titel)}</h3>
+    <p>${new Date(kurs.datum).toLocaleDateString("de-CH", { weekday: "long", day: "numeric", month: "long", year: "numeric" })} · ${esc(kurs.zeit)} · ${esc(kurs.ort)}</p>
     <form class="formular" id="kursForm">
       <label>Anzahl Personen
         <select name="personen">
-          ${Array.from({ length: kurs.frei }, (_, i) => `<option value="${i + 1}">${i + 1} Person${i ? "en" : ""}</option>`).join("")}
+          ${Array.from({ length: Math.min(freiePlaetze, 8) }, (_, i) => `<option value="${i + 1}">${i + 1} Person${i ? "en" : ""}</option>`).join("")}
         </select>
       </label>
       <div class="reihe">
@@ -276,13 +296,18 @@ function kursBuchen(kurs) {
   form.personen.addEventListener("change", () => ($("#kursTotal").textContent = chf(kurs.preis * form.personen.value)));
   form.addEventListener("submit", (e) => {
     e.preventDefault();
-    erfolgZeigen("Platz reserviert!", `Wir freuen uns auf Sie beim Kurs «${kurs.titel}». Alle Infos kommen per E-Mail.`);
+    const personen = Number(form.personen.value);
+    kurs.teilnehmer.push({ name: form.name.value, email: form.email.value, telefon: form.telefon.value, personen,
+      bemerkung: form.bemerkung.value, gebucht: heuteISO(), zahlart: form.zahlart.value, betrag: personen * kurs.preis });
+    Store.speichern();
+    kurseAnzeigen();
+    erfolgZeigen("Platz reserviert!", `Wir freuen uns auf Sie beim Kurs «${esc(kurs.titel)}». Alle Infos kommen per E-Mail.`);
   });
 }
 
 function wartelisteZeigen(kurs) {
   dialogZeigen(`
-    <h3>Warteliste: ${kurs.titel}</h3>
+    <h3>Warteliste: ${esc(kurs.titel)}</h3>
     <p>Der Kurs ist ausgebucht. Wir melden uns, sobald ein Platz frei wird oder ein neuer Termin feststeht.</p>
     <form class="formular" id="wlForm">
       <label>Name<input name="name" required></label>
@@ -314,6 +339,10 @@ function gutscheinZeigen() {
     </form>`);
   $("#gsForm").addEventListener("submit", (e) => {
     e.preventDefault();
+    const f = e.target;
+    db.gutscheine.unshift({ code: "BBQ-" + Math.floor(1000 + Math.random() * 8999), betrag: Number(f.betrag.value), fuer: f.fuer.value,
+      von: f.email.value, datum: heuteISO(), eingeloest: false });
+    Store.speichern();
     erfolgZeigen("Gutschein unterwegs!", "Das PDF wird an Ihre E-Mail-Adresse gesendet.");
   });
 }
@@ -333,8 +362,8 @@ document.addEventListener("click", (e) => {
   if (d.kaufen) {
     const p = produktVon(d.kaufen);
     p.auswahl ? boxAuswahl(p) : hinzufuegen(p.id);
-  } else if (d.buchen) kursBuchen(KURSE.find((k) => k.id === d.buchen));
-  else if (d.warteliste) wartelisteZeigen(KURSE.find((k) => k.id === d.warteliste));
+  } else if (d.buchen) kursBuchen(kursVon(d.buchen));
+  else if (d.warteliste) wartelisteZeigen(kursVon(d.warteliste));
   else if ("gutschein" in d) gutscheinZeigen();
   else if ("kasse" in d) kasseZeigen();
   else if ("plus" in d) { warenkorb[d.plus].menge++; speichern(); }
@@ -358,11 +387,21 @@ $("#nav").addEventListener("click", (e) => { if (e.target.tagName === "A") $("#n
 
 // Catering- und Kontaktformular (Entwurf: nur Bestätigung)
 $("#cateringForm").addEventListener("submit", (e) => {
-  e.preventDefault(); e.target.reset();
+  e.preventDefault();
+  const f = e.target;
+  db.anfragen.unshift({ id: Store.neueId("a"), typ: "catering", datum: heuteISO(), name: f.name.value, email: f.email.value, telefon: f.telefon.value,
+    anlassDatum: f.datum.value, personen: Number(f.personen.value), art: f.art.value, ort: f.ort.value, text: f.wuensche.value, erledigt: false });
+  Store.speichern();
+  f.reset();
   erfolgZeigen("Anfrage gesendet!", "Danke! Wir melden uns innert 48 Stunden mit einer Offerte.");
 });
 $("#kontaktForm").addEventListener("submit", (e) => {
-  e.preventDefault(); e.target.reset();
+  e.preventDefault();
+  const f = e.target;
+  db.anfragen.unshift({ id: Store.neueId("a"), typ: "kontakt", datum: heuteISO(), name: f.name.value, email: f.email.value, telefon: f.telefon.value,
+    betreff: f.betreff.value, text: f.anfrage.value, erledigt: false });
+  Store.speichern();
+  f.reset();
   erfolgZeigen("Nachricht gesendet!", "Danke für Ihre Nachricht, wir melden uns bald.");
 });
 
@@ -371,3 +410,9 @@ $("#jahr").textContent = new Date().getFullYear();
 kurseAnzeigen();
 produkteAnzeigen();
 warenkorbAnzeigen();
+
+// Wenn die Verwaltung in einem anderen Tab etwas ändert, Seite sofort aktualisieren
+document.addEventListener("store-geaendert", () => {
+  db = Store.laden();
+  kurseAnzeigen(); produkteAnzeigen(); warenkorbAnzeigen();
+});

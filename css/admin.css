@@ -1,0 +1,199 @@
+/* =========================================================
+   Balzner BBQ – Verwaltung (Demo)
+   Nutzt die Farben aus style.css, aber ruhiger und übersichtlicher.
+   ========================================================= */
+
+:root {
+  --flaeche: #ffffff;
+  --linie: #ece2d2;
+  --linie-2: #f4ede2;
+  --ok: #2f7d4f;
+  --warn: #b7791f;
+  /* Diagrammfarben: Reihenfolge fest. Shop, Kurse, Gutscheine */
+  --serie-1: #e0591f;
+  --serie-2: #2f3e5c;
+  --serie-3: #d4b48a;
+  --gitter: #efe7da;
+}
+
+body.admin { background: #f7f2ea; font-size: 15px; }
+.admin [hidden] { display: none !important; }
+.admin .demo-banner { display: flex; gap: 12px; justify-content: center; align-items: center; flex-wrap: wrap; }
+.admin .demo-banner button { font: inherit; font-weight: 700; background: #2a1d00; color: #f2c94c; border: 0; border-radius: 99px; padding: 3px 12px; cursor: pointer; }
+
+/* ---------- Login ---------- */
+.login { min-height: calc(100vh - 32px); display: grid; place-items: center; padding: 16px; background: var(--kohle); }
+.login-karte { background: var(--creme); border-radius: 18px; padding: 40px 36px; width: min(400px, 100%); text-align: center; box-shadow: 0 30px 80px rgba(0,0,0,.4); }
+.login-karte .logo { font-size: 1.8rem; display: block; margin-bottom: 6px; }
+.login-karte p { color: var(--text-hell); margin: 0 0 24px; }
+.login-karte small { display: block; margin-top: 16px; color: var(--text-hell); }
+
+/* ---------- Grundaufbau ---------- */
+.layout { display: grid; grid-template-columns: 240px 1fr; min-height: calc(100vh - 32px); }
+.seite { background: var(--kohle); color: var(--creme); padding: 22px 14px; display: flex; flex-direction: column; gap: 4px; position: sticky; top: 0; height: calc(100vh - 32px); }
+.seite .logo { padding: 0 12px 4px; font-size: 1.35rem; }
+.seite .rolle { padding: 0 12px 18px; font-size: .78rem; text-transform: uppercase; letter-spacing: .14em; color: #a8998a; }
+.navpunkt {
+  display: flex; align-items: center; gap: 12px; width: 100%; text-align: left;
+  background: none; border: 0; color: inherit; font: 500 .95rem var(--sans); padding: 11px 12px; border-radius: 10px; cursor: pointer; opacity: .78;
+}
+.navpunkt:hover { background: var(--kohle-2); opacity: 1; }
+.navpunkt.aktiv { background: var(--kohle-3); opacity: 1; }
+.navpunkt .ico { width: 20px; text-align: center; }
+.navpunkt .zahl { margin-left: auto; background: var(--glut); color: #fff; font-size: .72rem; font-weight: 700; border-radius: 99px; padding: 1px 8px; }
+.seite .unten { margin-top: auto; display: grid; gap: 4px; border-top: 1px solid var(--kohle-3); padding-top: 12px; }
+.seite a.navpunkt { text-decoration: none; }
+
+.inhalt { padding: 28px clamp(16px, 3vw, 40px) 60px; min-width: 0; }
+.kopfzeile { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 22px; }
+.kopfzeile h1 { font-size: clamp(1.6rem, 3vw, 2.1rem); margin: 0; }
+.kopfzeile p { margin: 4px 0 0; color: var(--text-hell); }
+
+.karte { background: var(--flaeche); border: 1px solid var(--linie); border-radius: var(--radius); padding: 20px 22px; }
+.karte h2 { font-size: 1.15rem; max-width: none; margin: 0 0 4px; }
+.karte .unter { color: var(--text-hell); font-size: .88rem; margin: 0 0 16px; }
+.raster { display: grid; gap: 16px; }
+.raster-2 { grid-template-columns: 1fr 1fr; }
+
+/* ---------- Kennzahlen ---------- */
+.kennzahlen { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 16px; margin-bottom: 16px; }
+.kennzahl { background: var(--flaeche); border: 1px solid var(--linie); border-radius: var(--radius); padding: 18px 20px; text-align: left; font: inherit; color: inherit; }
+button.kennzahl { cursor: pointer; transition: border-color .2s; }
+button.kennzahl:hover { border-color: var(--glut); }
+.kennzahl .label { font-size: .8rem; color: var(--text-hell); font-weight: 600; text-transform: uppercase; letter-spacing: .08em; }
+.kennzahl .wert { font-family: var(--titel); font-size: 1.9rem; line-height: 1.15; margin: 6px 0 2px; display: block; }
+.kennzahl .info { font-size: .85rem; color: var(--text-hell); }
+.trend-auf { color: var(--ok); font-weight: 600; }
+.trend-ab { color: #b0412e; font-weight: 600; }
+
+/* ---------- Diagramme ---------- */
+.diagramm { width: 100%; position: relative; }
+.diagramm svg { display: block; width: 100%; overflow: visible; }
+.diagramm text { font: 12px var(--sans); fill: var(--text-hell); }
+.legende { display: flex; flex-wrap: wrap; gap: 16px; margin: 0 0 12px; font-size: .85rem; color: var(--text); }
+.legende span { display: inline-flex; align-items: center; gap: 7px; }
+.legende i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+.tooltip {
+  position: fixed; z-index: 300; pointer-events: none; background: var(--kohle); color: var(--creme);
+  border-radius: 10px; padding: 10px 12px; font-size: .85rem; line-height: 1.5; box-shadow: var(--schatten);
+  opacity: 0; transition: opacity .12s; min-width: 160px;
+}
+.tooltip.sichtbar { opacity: 1; }
+.tooltip b { display: block; margin-bottom: 4px; }
+.tooltip .zeile { display: flex; align-items: center; gap: 8px; }
+.tooltip .zeile i { width: 10px; height: 10px; border-radius: 2px; }
+.tooltip .zeile span:last-child { margin-left: auto; padding-left: 14px; font-variant-numeric: tabular-nums; }
+details.tabelle-zeigen { margin-top: 12px; font-size: .88rem; }
+details.tabelle-zeigen summary { cursor: pointer; color: var(--text-hell); font-weight: 600; }
+
+/* Horizontale Balken (Bestseller, Auslastung) */
+.hbalken { display: grid; gap: 10px; }
+.hb-zeile { display: grid; grid-template-columns: minmax(110px, 38%) 1fr auto; gap: 12px; align-items: center; font-size: .9rem; }
+.hb-zeile .name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hb-zeile .name small { color: var(--text-hell); }
+.hb-spur { height: 14px; background: var(--linie-2); border-radius: 4px; position: relative; }
+.hb-wert { height: 100%; background: var(--serie-1); border-radius: 0 4px 4px 0; min-width: 3px; }
+.hb-wert.kommend { background: repeating-linear-gradient(135deg, var(--serie-1), var(--serie-1) 5px, #ec8a5b 5px, #ec8a5b 10px); }
+.hb-zeile .zahl { font-variant-numeric: tabular-nums; font-weight: 600; min-width: 48px; text-align: right; }
+
+/* ---------- Tabellen ---------- */
+.tabelle-wrap { overflow-x: auto; background: var(--flaeche); border: 1px solid var(--linie); border-radius: var(--radius); }
+table.tab { width: 100%; border-collapse: collapse; font-size: .9rem; }
+.tab th { text-align: left; font-size: .75rem; text-transform: uppercase; letter-spacing: .08em; color: var(--text-hell); padding: 12px 14px; border-bottom: 1px solid var(--linie); white-space: nowrap; background: #fcf9f4; }
+.tab td { padding: 12px 14px; border-bottom: 1px solid var(--linie-2); vertical-align: middle; }
+.tab tr:last-child td { border-bottom: 0; }
+.tab tr.klickbar { cursor: pointer; }
+.tab tr.klickbar:hover td { background: #fdf8f1; }
+.tab .r { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.tab td:first-child { white-space: nowrap; }
+.tab .grau { color: var(--text-hell); }
+.tab .aktionen { white-space: nowrap; text-align: right; }
+.belegung { display: flex; align-items: center; gap: 8px; min-width: 130px; }
+.belegung .hb-spur { flex: 1; height: 10px; }
+
+/* ---------- Kleine Elemente ---------- */
+.werkzeug { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 14px; }
+.chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.chip { font: 600 .85rem var(--sans); border: 1.5px solid var(--linie); background: var(--flaeche); border-radius: 99px; padding: 6px 14px; cursor: pointer; color: var(--text); }
+.chip.aktiv { background: var(--kohle); color: var(--creme); border-color: var(--kohle); }
+.suche { font: inherit; border: 1.5px solid var(--linie); border-radius: 99px; padding: 7px 16px; min-width: 220px; background: var(--flaeche); margin-left: auto; }
+.suche:focus { outline: none; border-color: var(--glut); }
+.status { display: inline-flex; align-items: center; gap: 6px; font-size: .78rem; font-weight: 700; padding: 3px 10px; border-radius: 99px; white-space: nowrap; }
+.status-neu { background: #fde6d8; color: #9a3a0f; }
+.status-ok { background: #e1f0e6; color: #22603b; }
+.status-grau { background: #eee8df; color: #6b5d50; }
+.knopf {
+  font: 600 .85rem var(--sans); border: 1.5px solid var(--linie); background: var(--flaeche); color: var(--text);
+  border-radius: 8px; padding: 6px 12px; cursor: pointer; white-space: nowrap;
+}
+.knopf:hover { border-color: var(--text-hell); }
+.knopf.gefahr:hover { border-color: #b0412e; color: #b0412e; }
+.knopf.haupt { background: var(--glut); border-color: var(--glut); color: #fff; }
+.knopf + .knopf { margin-left: 4px; }
+.schalter { display: inline-flex; align-items: center; gap: 8px; font-size: .85rem; cursor: pointer; user-select: none; }
+.schalter input { appearance: none; width: 36px; height: 20px; background: #d8cfc2; border-radius: 99px; position: relative; cursor: pointer; transition: background .2s; flex: none; margin: 0; }
+.schalter input::after { content: ""; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; background: #fff; border-radius: 50%; transition: transform .2s; }
+.schalter input:checked { background: var(--ok); }
+.schalter input:checked::after { transform: translateX(16px); }
+.schalter input.rot:checked { background: #b0412e; }
+.leer { text-align: center; color: var(--text-hell); padding: 40px 16px; }
+
+/* Produkte als Karten */
+.produkt-liste { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+.pk { background: var(--flaeche); border: 1px solid var(--linie); border-radius: var(--radius); overflow: hidden; display: flex; flex-direction: column; }
+.pk.versteckt { opacity: .6; }
+.pk-bild { position: relative; }
+.pk-bild img { width: 100%; aspect-ratio: 4/3; object-fit: cover; }
+.pk-bild .status { position: absolute; top: 10px; left: 10px; }
+.pk-text { padding: 14px 16px 16px; display: grid; gap: 10px; flex: 1; }
+.pk-kopf { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
+.pk-kopf h3 { margin: 0; font-size: 1.1rem; }
+.pk-kopf strong { white-space: nowrap; }
+.pk-info { font-size: .85rem; color: var(--text-hell); }
+.pk-schalter { display: flex; gap: 16px; flex-wrap: wrap; }
+.pk-aktionen { display: flex; gap: 6px; margin-top: auto; }
+
+/* Anfragen */
+.anfragen { display: grid; gap: 12px; }
+.anfrage { display: grid; grid-template-columns: 1fr auto; gap: 8px 20px; }
+.anfrage.erledigt { opacity: .6; }
+.anfrage h3 { font-size: 1.05rem; margin: 0; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.anfrage .meta { font-size: .85rem; color: var(--text-hell); display: flex; gap: 14px; flex-wrap: wrap; }
+.anfrage .meta a { color: var(--text); }
+.anfrage p { margin: 4px 0 0; grid-column: 1 / -1; }
+.anfrage .rechts { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
+
+/* Dialog in der Verwaltung: etwas breiter */
+.admin .dialog { width: min(640px, calc(100% - 32px)); }
+.admin .dialog .formular { gap: 12px; }
+.admin .dialog .tabelle-wrap { margin: 12px 0; }
+.dialog-fuss { display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px; flex-wrap: wrap; }
+.bild-vorschau { width: 100%; max-width: 220px; aspect-ratio: 1; object-fit: cover; border-radius: 10px; border: 1px solid var(--linie); }
+
+/* Druck: nur die Teilnehmerliste */
+.druckbereich { display: none; }
+@media print {
+  body.drucken > *:not(.druckbereich) { display: none !important; }
+  body.drucken .druckbereich { display: block; padding: 0; }
+  .druckbereich table { width: 100%; border-collapse: collapse; font-size: 11pt; }
+  .druckbereich th, .druckbereich td { border: 1px solid #999; padding: 6px 8px; text-align: left; }
+}
+
+/* ---------- Handy / Tablet ---------- */
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
+  .seite { position: sticky; top: 0; z-index: 40; height: auto; flex-direction: row; overflow-x: auto; padding: 8px; gap: 2px; scrollbar-width: none; }
+  .seite .logo, .seite .rolle { display: none; }
+  .navpunkt { width: auto; white-space: nowrap; padding: 9px 12px; }
+  .seite .unten { margin: 0; border: 0; padding: 0; display: flex; }
+  .raster-2 { grid-template-columns: 1fr; }
+  .suche { margin-left: 0; min-width: 0; width: 100%; }
+  .anfrage { grid-template-columns: 1fr; }
+  .anfrage .rechts { flex-direction: row; align-items: center; }
+}
+@media (max-width: 520px) {
+  .navpunkt .txt { display: none; }
+  .navpunkt .ico { width: auto; font-size: 1.15rem; }
+  .hb-zeile { grid-template-columns: 1fr auto; }
+  .hb-zeile .hb-spur { grid-column: 1 / -1; grid-row: 2; }
+}
